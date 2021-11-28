@@ -1,17 +1,28 @@
-import { Outlet, Link } from "remix";
-import type { LinksFunction } from "remix";
+import { Outlet, Link, useLoaderData } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
+import { db } from "~/utils/db.server";
+
 import stylesUrl from "../styles/jokes.css";
 
+type LoaderData = {
+  jokeListItems: Array<{ id: string; name: string }>;
+};
+
+export let loader: LoaderFunction = async () => ({
+  jokeListItems: await db.joke.findMany({
+    take: 5,
+    select: { id: true, name: true },
+    orderBy: { createdAt: "desc" },
+  }),
+});
+
 export let links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: stylesUrl,
-    },
-  ];
+  return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
 export default function JokesRoute() {
+  let { jokeListItems } = useLoaderData<LoaderData>();
+
   return (
     <div className="jokes-layout">
       <header className="jokes-header">
@@ -30,11 +41,13 @@ export default function JokesRoute() {
             <Link to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
             <ul>
-              <li>
-                <Link to="some-joke-id" prefetch="intent">
-                  Hippo
-                </Link>
-              </li>
+              {jokeListItems.map((joke) => (
+                <li key={joke.id}>
+                  <Link to={joke.id} prefetch="intent">
+                    {joke.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
             <Link to="new" className="button">
               Add your own
