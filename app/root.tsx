@@ -1,4 +1,4 @@
-import { Links, LiveReload, Outlet } from "remix";
+import { Links, LiveReload, Outlet, Scripts } from "remix";
 import type { LinksFunction } from "remix";
 
 import globalStylesUrl from "./styles/global.css";
@@ -7,10 +7,7 @@ import globalLargeStylesUrl from "./styles/global-large.css";
 
 export let links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: globalStylesUrl,
-    },
+    { rel: "stylesheet", href: globalStylesUrl },
     {
       rel: "stylesheet",
       href: globalMediumStylesUrl,
@@ -33,8 +30,8 @@ export default function App() {
         <Links />
       </head>
       <body>
-        root
         <Outlet />
+        <Scripts />
         {process.env.NODE_ENV === "development" ? <LiveReload /> : null}
       </body>
     </html>
