@@ -1,10 +1,9 @@
-import { useLoaderData } from "remix";
+import { useLoaderData, Link } from "remix";
 import stylesUrl from "~/styles/jokes.css";
 import { db } from "~/utils/db.server";
 
 import type { LinksFunction, LoaderFunction } from "remix";
 import type { Joke } from "@prisma/client";
-import { Link } from "react-router-dom";
 
 type RandomJoke = { joke: Joke };
 
@@ -28,7 +27,7 @@ export default function JokesIndexRoute() {
   const { joke } = useLoaderData<RandomJoke>();
 
   return (
-    <div className="foo bar baz">
+    <div>
       <p>Here's a random joke:</p>
       <p>
         <q>{joke.content}</q>
