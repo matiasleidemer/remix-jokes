@@ -63,7 +63,6 @@ export let action: ActionFunction = async ({
   switch (loginType) {
     case "login": {
       let user = await login({ username, password });
-      console.log({ user });
 
       if (!user) {
         return {
@@ -111,7 +110,7 @@ export default function Login() {
           <input
             type="hidden"
             name="redirectTo"
-            value={searchParams.get("redirectTo") ?? undefined}
+            value={searchParams.get("redirectTo") ?? "/jokes"}
           />
           <fieldset>
             <legend className="sr-only">Login or Register?</legend>
