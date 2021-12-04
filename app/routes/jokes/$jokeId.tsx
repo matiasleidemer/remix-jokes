@@ -1,4 +1,4 @@
-import { useLoaderData, Link } from "remix";
+import { useLoaderData, Link, useParams } from "remix";
 import { db } from "~/utils/db.server";
 
 import type { LoaderFunction } from "remix";
@@ -28,6 +28,16 @@ export default function JokeRoute() {
         <q>{joke.content}</q>
       </p>
       <Link to=".">{joke.name} Permalink</Link>
+    </div>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  const { jokeId } = useParams();
+  return (
+    <div className="error-container">
+      {`There was an error loading joke by the id ${jokeId}. Sorry.`}
+      <pre>{error.stack}</pre>
     </div>
   );
 }
