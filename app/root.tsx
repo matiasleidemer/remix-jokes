@@ -70,7 +70,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
     <Document title="Uh-oh!">
       <div className="error-container">
         <h1>App Error</h1>
-        <pre>{error.message}</pre>
+        <pre>{error.stack}</pre>
       </div>
     </Document>
   );
