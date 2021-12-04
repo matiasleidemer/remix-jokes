@@ -1,4 +1,4 @@
-import { useLoaderData, Link } from "remix";
+import { useLoaderData, Link, useCatch } from "remix";
 import stylesUrl from "~/styles/jokes.css";
 import { db } from "~/utils/db.server";
 
@@ -10,11 +10,18 @@ type RandomJoke = { joke: Joke };
 export let loader: LoaderFunction = async () => {
   let count = await db.joke.count();
   let randomRowNumber = Math.floor(Math.random() * count);
+
   let [randomJoke] = await db.joke.findMany({
     select: { content: true, name: true, id: true },
     take: 1,
     skip: randomRowNumber,
   });
+
+  if (!randomJoke) {
+    throw new Response("No random joke found", {
+      status: 404,
+    });
+  }
 
   return { joke: randomJoke };
 };
@@ -37,6 +44,17 @@ export default function JokesIndexRoute() {
       </Link>
     </div>
   );
+}
+
+export function CatchBoundary() {
+  let caught = useCatch();
+
+  if (caught.status === 404) {
+    return (
+      <div className="error-container">There are no jokes to display.</div>
+    );
+  }
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
 export function ErrorBoundary() {
